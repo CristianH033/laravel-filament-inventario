@@ -1,6 +1,6 @@
 // https://aka.ms/devcontainer.json
 {
-    "name": "Tu Rifa APP (DevContainer)",
+    "name": "Control Inventario (DevContainer)",
     "dockerComposeFile": ["../docker-compose.yml"],
     "service": "laravel.test",
     "workspaceFolder": "/var/www/html",
