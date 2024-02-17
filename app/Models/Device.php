@@ -76,7 +76,7 @@ class Device extends Model
     protected function displayName(): Attribute
     {
         return Attribute::make(
-            get: fn (): string => $this->brand?->name . ' ' . $this->model
+            get: fn (): string => $this->brand?->name.' '.$this->model
         );
     }
 }
