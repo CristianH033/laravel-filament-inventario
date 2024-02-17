@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('historicals', function (Blueprint $table) {
             $table->id();
             $table->foreignId('item_id')->constrained();
-            $table->json('changes');
+            $table->json('change_log');
             $table->dateTime('change_date');
             $table->text('reason');
             $table->timestamps();

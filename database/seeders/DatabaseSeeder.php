@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             LocationSeeder::class,
             DeviceSeeder::class,
             ItemSeeder::class,
-            HistoricalSeeder::class,
+            // HistoricalSeeder::class,
         ]);
     }
 }

@@ -13,15 +13,28 @@ class StatusSeeder extends Seeder
     public function run(): void
     {
         $statuses = [
-            'Disponible',
-            'En uso',
-            'En mantenimiento',
-            'Dañado',
-            'Perdido',
+            [
+                'name' => 'Disponible',
+                'color' => 'success',
+            ],
+            [
+                'name' => 'En uso',
+                'color' => 'info',
+            ],
+            [
+                'name' => 'En mantenimiento',
+                'color' => 'warning',
+            ],
+            [
+                'name' => 'Dañado',
+                'color' => 'danger',
+            ],
+            [
+                'name' => 'Perdido',
+                'color' => 'gray',
+            ],
         ];
 
-        Status::factory()->createMany(
-            array_map(fn ($status) => ['name' => $status], $statuses)
-        );
+        Status::factory()->createMany($statuses);
     }
 }

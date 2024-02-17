@@ -13,7 +13,7 @@ class Status extends Model
     /**
      * The attributes that are mass assignable.
      *
-     * @var array
+     * @var array<string>
      */
     protected $fillable = [
         'name',
@@ -23,12 +23,17 @@ class Status extends Model
     /**
      * The attributes that should be cast to native types.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $casts = [
         'id' => 'integer',
     ];
 
+    /**
+     * Get all of the items for the Status
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Item>
+     */
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);

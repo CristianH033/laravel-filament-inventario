@@ -27,21 +27,21 @@ class HistoricalFactory extends Factory
 
         return [
             'item_id' => $item->id,
-            'changes' => [
+            'change_log' => [
                 'prev_state' => [
                     'serial' => $item->serial,
                     'internal_serial' => $item->internal_serial,
-                    'device_id' => $item->device_id,
-                    'location_id' => $item->location_id,
-                    'status_id' => $item->status_id,
+                    'device' => $item->device->display_name,
+                    'location' => $item->location->name,
+                    'status' => $item->status->name,
                     'comments' => $item->comments,
                 ],
                 'new_state' => [
                     'serial' => $this->faker->bothify('??-####?'),
                     'internal_serial' => $this->faker->bothify('??-####?'),
-                    'device_id' => Device::factory(),
-                    'location_id' => Location::factory(),
-                    'status_id' => Status::factory(),
+                    'device' => Device::inRandomOrder()->first()->display_name ?? Device::factory()->create()->display_name,
+                    'location' => Location::inRandomOrder()->first()->name ?? Location::factory()->create()->name,
+                    'status' => Status::inRandomOrder()->first()->name ?? Status::factory()->create()->name,
                     'comments' => $this->faker->text(),
                 ],
             ],
