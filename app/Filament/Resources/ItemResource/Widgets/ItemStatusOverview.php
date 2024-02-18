@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\ItemResource\Widgets;
 
 use App\Models\Status;
-use Filament\Widgets\ChartWidget;
 use Filament\Support\Facades\FilamentColor;
+use Filament\Widgets\ChartWidget;
 
 class ItemStatusOverview extends ChartWidget
 {
@@ -15,8 +15,8 @@ class ItemStatusOverview extends ChartWidget
         $labels = Status::pluck('name')->toArray();
         $data = Status::withCount('items')->get()->pluck('items_count')->toArray();
         $filamentColors = FilamentColor::getColors();
-        $backgroundColors = (Status::pluck('color')->map(fn ($color) => "rgba(" . $filamentColors[$color][700] . ", 0.8)"));
-        $borderColors = (Status::pluck('color')->map(fn ($color) => "rgb(" . $filamentColors[$color][400] . ")"));
+        $backgroundColors = (Status::pluck('color')->map(fn ($color) => 'rgba(' . $filamentColors[$color][700] . ', 0.8)'));
+        $borderColors = (Status::pluck('color')->map(fn ($color) => 'rgb(' . $filamentColors[$color][400] . ')'));
 
         return [
             'labels' => $labels,
@@ -37,6 +37,11 @@ class ItemStatusOverview extends ChartWidget
         return 'doughnut';
     }
 
+    /**
+     * Get the options for the chart.
+     *
+     * @return array<string, mixed>
+     */
     public function getOptions(): array
     {
         return [

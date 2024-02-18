@@ -2,7 +2,6 @@
 
 namespace App\Helpers;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class Arrays
@@ -10,9 +9,9 @@ class Arrays
     /**
      * Map an array to a set of keys
      *
-     * @param array $sourceArray
-     * @param array<string|int> $keysArray
-     * @return array
+     * @param  array<string|int>  $sourceArray
+     * @param  array<string|int>  $keysArray
+     * @return array<string|int|null>
      */
     public static function mapArrayToKeys(array $sourceArray, array $keysArray): array
     {
@@ -31,7 +30,7 @@ class Arrays
             $processedChunk = $chunk->combine(collect($sourceArray)->take($chunk->count()));
 
             // transform int keys to string keys
-            $processedChunk = $processedChunk->mapWithKeys(fn ($value, $key) => [Str::of($key)->append($strSalt)->value => $value]);
+            $processedChunk = $processedChunk->mapWithKeys(fn ($value, $key) => [Str::of($key)->append($strSalt)->value() => $value]);
 
             $result = $result->merge($processedChunk);
         });
@@ -40,6 +39,9 @@ class Arrays
             fn ($value, $key) => [Str::of($key)->replace($strSalt, '')->value() => $value]
         )->toArray();
 
-        return $result;
+        /**
+         * @var array<string|int|null> $result
+         */
+        return (array) $result;
     }
 }

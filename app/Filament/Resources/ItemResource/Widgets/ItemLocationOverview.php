@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\ItemResource\Widgets;
 
-use App\Helpers\Arrays;
 use App\Models\Location;
 use App\Models\Status;
 use Filament\Support\Colors\Color;
@@ -26,6 +25,11 @@ class ItemLocationOverview extends ChartWidget
         ];
     }
 
+    /**
+     * Get the datasets for the chart.
+     *
+     * @return array<int, array<string, mixed>>
+     */
     public function getDatasets(): array
     {
         $locations = Location::with('items')->get();
@@ -40,11 +44,11 @@ class ItemLocationOverview extends ChartWidget
             })->toArray();
 
             $backgroundColors = collect(range(0, count($locations) - 1))->map(function ($i) use ($filamentColors, $status) {
-                return "rgba(" . $filamentColors[$status->color][700] . ", 0.8)";
+                return 'rgba(' . $filamentColors[$status->color][700] . ', 0.8)';
             })->toArray();
 
             $borderColors = collect(range(0, count($locations) - 1))->map(function ($i) use ($filamentColors, $status) {
-                return "rgb(" . $filamentColors[$status->color][400] . ")";
+                return 'rgb(' . $filamentColors[$status->color][400] . ')';
             })->toArray();
 
             $dataSets[] = [
@@ -53,7 +57,7 @@ class ItemLocationOverview extends ChartWidget
                 'backgroundColor' => $backgroundColors,
                 'borderColor' => $borderColors,
                 'hoverOffset' => 4,
-                "order" => $i + 1,
+                'order' => $i + 1,
             ];
         });
 
@@ -65,13 +69,13 @@ class ItemLocationOverview extends ChartWidget
         $dataSets[] = [
             'label' => 'Total',
             'data' => $data,
-            'backgroundColor' => "rgba(" . Color::Amber[900] . ", 0.6)",
-            'borderColor' => "rgb(" . Color::Amber[500] . ")",
-            "fill" => false,
-            "pointHoverRadius" => 20,
-            "pointHoverBorderWidth" => 5,
-            "type" => "line",
-            "order" => 0,
+            'backgroundColor' => 'rgba(' . Color::Amber[900] . ', 0.6)',
+            'borderColor' => 'rgb(' . Color::Amber[500] . ')',
+            'fill' => false,
+            'pointHoverRadius' => 20,
+            'pointHoverBorderWidth' => 5,
+            'type' => 'line',
+            'order' => 0,
         ];
 
         return $dataSets;
@@ -82,6 +86,11 @@ class ItemLocationOverview extends ChartWidget
         return 'bar';
     }
 
+    /**
+     * Get the options for the chart.
+     *
+     * @return array<string, mixed>
+     */
     public function getOptions(): array
     {
         return [
@@ -114,7 +123,7 @@ class ItemLocationOverview extends ChartWidget
         ];
     }
 
-    public function getColumnSpan(): int | string | array
+    public function getColumnSpan(): int|string|array
     {
         return 1;
     }

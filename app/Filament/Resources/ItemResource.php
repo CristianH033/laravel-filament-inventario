@@ -83,7 +83,7 @@ class ItemResource extends Resource
                             ->options(
                                 collect(Colors::getAllKeys())->mapWithKeys(
                                     fn ($color) => [$color => Blade::render('<x-filament::badge color="' . $color . '">' . $color . '</x-filament::badge>')]
-                                )->toArray()
+                                )
                             )
                             ->native(false)
                             ->allowHtml()

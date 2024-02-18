@@ -32,7 +32,7 @@ class StatusResource extends Resource
                 Forms\Components\Select::make('color')
                     ->options(
                         // collect(Color::all())->keys()->mapWithKeys(fn ($color) => [$color => $color])
-                        collect(Colors::getAllKeys())->mapWithKeys(fn ($color) => [$color => Blade::render('<x-filament::badge color="' . $color . '">' . $color . '</x-filament::badge>')])
+                        collect(Colors::getAllKeys())->mapWithKeys(fn ($color) => [$color => Blade::render('<x-filament::badge color="'.$color.'">'.$color.'</x-filament::badge>')])
                     )
                     ->native(false)
                     ->allowHtml()
