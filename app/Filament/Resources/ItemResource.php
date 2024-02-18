@@ -106,12 +106,20 @@ class ItemResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('serial')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('internal_serial')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('device.display_name')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable(query: function (Builder $query, string $direction, $column): Builder {
+                        // [$table, $field] = explode('.', $column->getName());
+                        [$table, $field] = ['device', 'model'];
+
+                        return $query->withAggregate($table, $field)
+                            ->orderBy(implode('_', [$table, $field]), $direction);
+                    }),
                 Tables\Columns\TextColumn::make('location.name')
                     ->numeric()
                     ->sortable(),
