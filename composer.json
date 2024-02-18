@@ -9,12 +9,16 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
+        "codeat3/blade-google-material-design-icons": "^1.18",
+        "codeat3/blade-uiw-icons": "^1.4",
         "filament/filament": "^3.2",
         "guzzlehttp/guzzle": "^7.2",
         "kirschbaum-development/eloquent-power-joins": "^3.5",
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.3",
-        "laravel/tinker": "^2.8"
+        "laravel/tinker": "^2.8",
+        "postare/blade-mdi": "^1.1",
+        "ryangjchandler/blade-tabler-icons": "^2.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.10",

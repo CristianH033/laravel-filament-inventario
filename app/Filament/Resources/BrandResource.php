@@ -15,7 +15,9 @@ class BrandResource extends Resource
 {
     protected static ?string $model = Brand::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'gmdi-corporate-fare-r';
+
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {

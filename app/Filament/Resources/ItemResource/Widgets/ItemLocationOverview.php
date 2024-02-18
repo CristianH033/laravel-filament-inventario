@@ -40,11 +40,11 @@ class ItemLocationOverview extends ChartWidget
             })->toArray();
 
             $backgroundColors = collect(range(0, count($locations) - 1))->map(function ($i) use ($filamentColors, $status) {
-                return "rgba(" . $filamentColors[$status->color][900] . ", 0.6)";
+                return "rgba(" . $filamentColors[$status->color][700] . ", 0.8)";
             })->toArray();
 
             $borderColors = collect(range(0, count($locations) - 1))->map(function ($i) use ($filamentColors, $status) {
-                return "rgb(" . $filamentColors[$status->color][500] . ")";
+                return "rgb(" . $filamentColors[$status->color][400] . ")";
             })->toArray();
 
             $dataSets[] = [
@@ -86,10 +86,10 @@ class ItemLocationOverview extends ChartWidget
     {
         return [
             'responsive' => true,
-            // 'maintainAspectRatio' => false,
+            'maintainAspectRatio' => true,
+            'aspectRatio' => 1,
             'animation' => [
                 'duration' => 500,
-                // 'easing' => 'easeInBounce',
             ],
             'title' => [
                 'display' => true,
@@ -99,7 +99,7 @@ class ItemLocationOverview extends ChartWidget
             'scales' => [
                 'x' => [
                     'ticks' => [
-                        'display' => false,
+                        'display' => true,
                     ],
                     'stacked' => true,
 
@@ -110,28 +110,6 @@ class ItemLocationOverview extends ChartWidget
                     ],
                     'stacked' => true,
                 ],
-                // 'xAxes' => [
-                //     'stacked' => true,
-                //     'grid' => [
-                //         'display' => false,
-                //     ],
-                //     "title" => [
-                //         "display" => false,
-                //     ],
-                //     "ticks" => [
-                //         "display" => false
-                //     ],
-                // ],
-                // 'yAxes' => [
-                //     'stacked' => true,
-                //     'grid' => [
-                //         'display' => false,
-                //     ],
-                //     "scaleShowLabels" => false,
-                //     "ticks" => [
-                //         "display" => true
-                //     ],
-                // ],
             ],
         ];
     }

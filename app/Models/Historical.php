@@ -71,4 +71,6 @@ class Historical extends Model
             get: fn () => $changes
         );
     }
+
+    // public function getM
 }

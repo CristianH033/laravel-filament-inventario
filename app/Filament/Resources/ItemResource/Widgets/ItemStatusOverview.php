@@ -6,17 +6,17 @@ use App\Models\Status;
 use Filament\Widgets\ChartWidget;
 use Filament\Support\Facades\FilamentColor;
 
-class ItemOverview extends ChartWidget
+class ItemStatusOverview extends ChartWidget
 {
-    protected static ?string $heading = 'Items Overview';
+    protected static ?string $heading = 'Items Overview by Status';
 
     protected function getData(): array
     {
         $labels = Status::pluck('name')->toArray();
         $data = Status::withCount('items')->get()->pluck('items_count')->toArray();
         $filamentColors = FilamentColor::getColors();
-        $backgroundColors = (Status::pluck('color')->map(fn ($color) => "rgba(" . $filamentColors[$color][900] . ", 0.6)"));
-        $borderColors = (Status::pluck('color')->map(fn ($color) => "rgb(" . $filamentColors[$color][500] . ")"));
+        $backgroundColors = (Status::pluck('color')->map(fn ($color) => "rgba(" . $filamentColors[$color][700] . ", 0.8)"));
+        $borderColors = (Status::pluck('color')->map(fn ($color) => "rgb(" . $filamentColors[$color][400] . ")"));
 
         return [
             'labels' => $labels,
@@ -35,5 +35,14 @@ class ItemOverview extends ChartWidget
     protected function getType(): string
     {
         return 'doughnut';
+    }
+
+    public function getOptions(): array
+    {
+        return [
+            'animation' => [
+                'duration' => 500,
+            ],
+        ];
     }
 }

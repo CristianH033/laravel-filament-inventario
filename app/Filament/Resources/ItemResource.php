@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ItemResource\Pages;
 use App\Filament\Resources\ItemResource\RelationManagers;
+use App\Helpers\Colors;
 use App\Models\Device;
 use App\Models\Item;
 use App\Models\Location;
@@ -17,12 +18,15 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Blade;
 
 class ItemResource extends Resource
 {
     protected static ?string $model = Item::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'gmdi-inventory-2-o';
+
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {
@@ -57,9 +61,34 @@ class ItemResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('location')
                     ->relationship(titleAttribute: 'name')
+                    ->native(false)
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->required(),
+                        Forms\Components\Textarea::make('description')
+                            ->columnSpanFull(),
+                    ])
                     ->required(),
                 Forms\Components\Select::make('status')
                     ->relationship(titleAttribute: 'name')
+                    ->native(false)
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->required(),
+                        Forms\Components\Select::make('color')
+                            ->options(
+                                collect(Colors::getAllKeys())->mapWithKeys(
+                                    fn ($color) => [$color => Blade::render('<x-filament::badge color="' . $color . '">' . $color . '</x-filament::badge>')]
+                                )->toArray()
+                            )
+                            ->native(false)
+                            ->allowHtml()
+                            ->required(),
+                    ])
                     ->required(),
                 Forms\Components\TextInput::make('serial')
                     ->unique(ignoreRecord: true)

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StatusResource\Pages;
 use App\Filament\Resources\StatusResource\RelationManagers;
+use App\Helpers\Colors;
 use App\Models\Status;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -17,18 +18,9 @@ class StatusResource extends Resource
 {
     protected static ?string $model = Status::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?int $navigationSort = 1;
 
-    /**
-     * @var array<string, string>
-     */
-    protected static array $colors = [
-        'success' => 'Success',
-        'info' => 'Info',
-        'warning' => 'Warning',
-        'danger' => 'Danger',
-        'gray' => 'Gray',
-    ];
+    protected static ?string $navigationIcon = 'mdi-list-status';
 
     public static function form(Form $form): Form
     {
@@ -40,7 +32,7 @@ class StatusResource extends Resource
                 Forms\Components\Select::make('color')
                     ->options(
                         // collect(Color::all())->keys()->mapWithKeys(fn ($color) => [$color => $color])
-                        collect(static::$colors)->mapWithKeys(fn ($color, $key) => [$key => Blade::render('<x-filament::badge color="'.$key.'">'.$color.'</x-filament::badge>')])
+                        collect(Colors::getAllKeys())->mapWithKeys(fn ($color) => [$color => Blade::render('<x-filament::badge color="' . $color . '">' . $color . '</x-filament::badge>')])
                     )
                     ->native(false)
                     ->allowHtml()
