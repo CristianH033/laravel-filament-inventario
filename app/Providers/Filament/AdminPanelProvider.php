@@ -43,9 +43,9 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
-                ItemLocationOverview::make(),
-                ItemStatusOverview::make(),
-                ItemCategoryOverview::make(),
+                ItemLocationOverview::class,
+                ItemStatusOverview::class,
+                ItemCategoryOverview::class,
             ])
             ->middleware([
                 EncryptCookies::class,
