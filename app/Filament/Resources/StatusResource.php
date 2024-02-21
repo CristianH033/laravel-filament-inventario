@@ -8,6 +8,7 @@ use App\Helpers\Colors;
 use App\Models\Status;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
 use Filament\Tables;
@@ -32,7 +33,7 @@ class StatusResource extends Resource
                 Forms\Components\Select::make('color')
                     ->options(
                         // collect(Color::all())->keys()->mapWithKeys(fn ($color) => [$color => $color])
-                        collect(Colors::getAllKeys())->mapWithKeys(fn ($color) => [$color => Blade::render('<x-filament::badge color="'.$color.'">'.$color.'</x-filament::badge>')])
+                        collect(Colors::getAllKeys())->mapWithKeys(fn ($color) => [$color => Blade::render('<x-filament::badge color="' . $color . '">' . $color . '</x-filament::badge>')])
                     )
                     ->native(false)
                     ->allowHtml()
@@ -65,10 +66,26 @@ class StatusResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Status $record, Tables\Actions\DeleteAction $action) {
+                        if ($record->items()->exists()) {
+                            Notification::make()
+                                ->title('Cannot delete Status')
+                                ->body('Status has items assigned to it')
+                                ->status('danger')
+                                ->send();
+
+                            $action->cancel();
+
+                            return;
+                        }
+
+                        return $action;
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

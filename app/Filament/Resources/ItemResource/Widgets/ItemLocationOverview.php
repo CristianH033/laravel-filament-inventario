@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\ItemResource\Widgets;
 
+use App\Helpers\Colors;
 use App\Models\Location;
 use App\Models\Status;
 use Filament\Support\Colors\Color;
-use Filament\Support\Facades\FilamentColor;
 use Filament\Widgets\ChartWidget;
 
 class ItemLocationOverview extends ChartWidget
@@ -14,10 +14,8 @@ class ItemLocationOverview extends ChartWidget
 
     protected function getData(): array
     {
-        $labels = Location::pluck('name')->toArray();
-        $datasets = $this->getDatasets();
 
-        // dd($datasets);
+        [$labels, $datasets] = $this->getChartData();
 
         return [
             'labels' => $labels,
@@ -28,28 +26,30 @@ class ItemLocationOverview extends ChartWidget
     /**
      * Get the datasets for the chart.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array<array<string, mixed>>
      */
-    public function getDatasets(): array
+    public function getChartData(): array
     {
-        $locations = Location::with('items')->get();
-        $filamentColors = FilamentColor::getColors();
+        $locations = Location::with('items')->orderBy('id')->get();
+        $statuses = Status::orderBy('id')->get();
 
         $dataSets = [];
 
         // make a dataset for each status
-        Status::each(function ($status, $i) use ($locations, $filamentColors, &$dataSets) {
-            $data = $locations->map(function ($location) use ($status) {
-                return $location->items->where('status_id', $status->id)->count();
-            })->toArray();
+        $statuses->each(function ($status, $i) use ($locations, &$dataSets) {
+            $data = $locations->map(
+                fn ($location) => (
+                    $location->items->where('status_id', $status->id)->count()
+                )
+            )->toArray();
 
-            $backgroundColors = collect(range(0, count($locations) - 1))->map(function ($i) use ($filamentColors, $status) {
-                return 'rgba(' . $filamentColors[$status->color][700] . ', 0.8)';
-            })->toArray();
+            $backgroundColors = $locations->map(fn () => (
+                Colors::rgbaColor($status->color, 700, 0.8)
+            ))->toArray();
 
-            $borderColors = collect(range(0, count($locations) - 1))->map(function ($i) use ($filamentColors, $status) {
-                return 'rgb(' . $filamentColors[$status->color][400] . ')';
-            })->toArray();
+            $borderColors = $locations->map(fn () => (
+                Colors::rgbColor($status->color, 400)
+            ))->toArray();
 
             $dataSets[] = [
                 'label' => $status->name,
@@ -62,15 +62,15 @@ class ItemLocationOverview extends ChartWidget
         });
 
         // make a dataset for the total
-        $data = $locations->map(function ($location) {
-            return $location->items->count();
-        })->toArray();
+        $dataSetTotal = $locations->map(fn ($location) => (
+            $location->items->count()
+        ))->toArray();
 
         $dataSets[] = [
             'label' => 'Total',
-            'data' => $data,
-            'backgroundColor' => 'rgba(' . Color::Amber[900] . ', 0.6)',
-            'borderColor' => 'rgb(' . Color::Amber[500] . ')',
+            'data' => $dataSetTotal,
+            'backgroundColor' => 'rgba('.Color::Amber[900].', 0.6)',
+            'borderColor' => 'rgb('.Color::Amber[500].')',
             'fill' => false,
             'pointHoverRadius' => 20,
             'pointHoverBorderWidth' => 5,
@@ -78,7 +78,12 @@ class ItemLocationOverview extends ChartWidget
             'order' => 0,
         ];
 
-        return $dataSets;
+        $data = [
+            $locations->pluck('name')->toArray(),
+            $dataSets,
+        ];
+
+        return $data;
     }
 
     protected function getType(): string

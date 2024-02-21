@@ -54,8 +54,23 @@ class Historical extends Model
      */
     public function displayChanges(): Attribute
     {
+        // @phpstan-ignore-next-line
+        $changeLog = is_array($this->change_log) ? $this->change_log : [];
+
+        if (!array_key_exists('prev_state', $changeLog) || !array_key_exists('new_state', $changeLog)) {
+            return Attribute::make(
+                get: fn () => []
+            );
+        }
+
+        if (!is_array($changeLog['prev_state']) || !is_array($changeLog['new_state'])) {
+            return Attribute::make(
+                get: fn () => []
+            );
+        }
+
         // get diff between prev_state and new_state
-        $diff = array_diff_assoc($this->change_log['new_state'], $this->change_log['prev_state']);
+        $diff = array_diff_assoc($changeLog['new_state'], $changeLog['prev_state']);
 
         $changes = [];
 
@@ -71,6 +86,4 @@ class Historical extends Model
             get: fn () => $changes
         );
     }
-
-    // public function getM
 }

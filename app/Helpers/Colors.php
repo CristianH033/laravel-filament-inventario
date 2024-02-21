@@ -10,7 +10,7 @@ class Colors
     /**
      * Get all colors
      *
-     * @return array<string, array<string, string>>
+     * @return array<string, array<int, string>>
      */
     public static function getAll(): array
     {
@@ -18,7 +18,7 @@ class Colors
         $filamentColors = collect(FilamentColor::getColors());
 
         /**
-         * @var array<string, array<string, string>>
+         * @var array<string, array<int, string>>
          */
         return $baseColors->merge($filamentColors)->toArray();
     }
@@ -34,5 +34,19 @@ class Colors
          * @var array<string>
          */
         return collect(self::getAll())->keys()->toArray();
+    }
+
+    public static function rgbColor(string $color, int $shade = 500): string
+    {
+        $colors = self::getAll();
+
+        return 'rgb('.$colors[$color][$shade].')';
+    }
+
+    public static function rgbaColor(string $color, int $shade = 500, float $alpha = 0.8): string
+    {
+        $colors = self::getAll();
+
+        return 'rgba('.$colors[$color][$shade].', '.$alpha.')';
     }
 }

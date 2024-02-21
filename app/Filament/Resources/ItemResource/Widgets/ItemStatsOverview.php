@@ -2,18 +2,20 @@
 
 namespace App\Filament\Resources\ItemResource\Widgets;
 
-use App\Models\Category;
+use App\Models\Historical;
 use App\Models\Item;
+use App\Models\Location;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class ItemCategoryOverview extends BaseWidget
+class ItemStatsOverview extends BaseWidget
 {
     protected function getStats(): array
     {
         return [
             Stat::make('Total Items', Item::count()),
-            Stat::make('Total Categories', Category::count()),
+            Stat::make('Total Locations', Location::count()),
+            Stat::make('Total Items Changes', Historical::count()),
         ];
     }
 }

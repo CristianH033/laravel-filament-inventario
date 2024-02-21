@@ -7,6 +7,7 @@ use App\Filament\Resources\LocationResource\RelationManagers;
 use App\Models\Location;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -52,10 +53,26 @@ class LocationResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Location $record, Tables\Actions\DeleteAction $action) {
+                        if ($record->items()->exists()) {
+                            Notification::make()
+                                ->title('Cannot delete location')
+                                ->body('Location has items assigned to it')
+                                ->status('danger')
+                                ->send();
+
+                            $action->cancel();
+
+                            return;
+                        }
+
+                        return $action;
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

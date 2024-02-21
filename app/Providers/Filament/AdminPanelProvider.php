@@ -2,7 +2,7 @@
 
 namespace App\Providers\Filament;
 
-use App\Filament\Resources\ItemResource\Widgets\ItemCategoryOverview;
+use App\Filament\Resources\ItemResource\Widgets\ItemStatsOverview;
 use App\Filament\Resources\ItemResource\Widgets\ItemLocationOverview;
 use App\Filament\Resources\ItemResource\Widgets\ItemStatusOverview;
 use Filament\Http\Middleware\Authenticate;
@@ -43,9 +43,9 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 // Widgets\AccountWidget::class,
                 // Widgets\FilamentInfoWidget::class,
+                ItemStatsOverview::class,
                 ItemLocationOverview::class,
                 ItemStatusOverview::class,
-                ItemCategoryOverview::class,
             ])
             ->middleware([
                 EncryptCookies::class,

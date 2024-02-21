@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\ItemResource\Widgets;
 
+use App\Helpers\Colors;
 use App\Models\Status;
-use Filament\Support\Facades\FilamentColor;
 use Filament\Widgets\ChartWidget;
 
 class ItemStatusOverview extends ChartWidget
@@ -12,11 +12,12 @@ class ItemStatusOverview extends ChartWidget
 
     protected function getData(): array
     {
-        $labels = Status::pluck('name')->toArray();
-        $data = Status::withCount('items')->get()->pluck('items_count')->toArray();
-        $filamentColors = FilamentColor::getColors();
-        $backgroundColors = (Status::pluck('color')->map(fn ($color) => 'rgba(' . $filamentColors[$color][700] . ', 0.8)'));
-        $borderColors = (Status::pluck('color')->map(fn ($color) => 'rgb(' . $filamentColors[$color][400] . ')'));
+        $statuses = Status::select('id', 'name', 'color')->withCount('items')->orderBy('id')->get();
+
+        $labels = $statuses->pluck('name');
+        $data = $statuses->pluck('items_count');
+        $backgroundColors = ($statuses->map(fn ($status) => Colors::rgbaColor($status->color, 700, 0.8)));
+        $borderColors = ($statuses->map(fn ($status) => Colors::rgbColor($status->color, 400)));
 
         return [
             'labels' => $labels,

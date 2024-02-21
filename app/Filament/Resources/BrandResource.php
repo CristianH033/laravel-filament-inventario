@@ -7,6 +7,7 @@ use App\Filament\Resources\BrandResource\RelationManagers;
 use App\Models\Brand;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -50,10 +51,26 @@ class BrandResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Brand $record, Tables\Actions\DeleteAction $action) {
+                        if ($record->devices()->exists()) {
+                            Notification::make()
+                                ->title('Cannot delete Brand')
+                                ->body('Brand has devices assigned to it')
+                                ->status('danger')
+                                ->send();
+
+                            $action->cancel();
+
+                            return;
+                        }
+
+                        return $action;
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

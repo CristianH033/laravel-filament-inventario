@@ -42,6 +42,34 @@ class Item extends Model
      */
     protected static function booted(): void
     {
+        static::deleting(function (Item $item) {
+            $item->historicals()->create([
+                'item_id' => null,
+                'change_log' => [
+                    'prev_state' => [
+                        'item_id' => $item->id,
+                        'serial' => $item->serial,
+                        'internal_serial' => $item->internal_serial,
+                        'device' => $item->device?->display_name,
+                        'location' => $item->location?->name,
+                        'status' => $item->status?->name,
+                        'comments' => $item->comments,
+                    ],
+                    'new_state' => [
+                        'item_id' => 'DELETED',
+                        'serial' => 'DELETED',
+                        'internal_serial' => 'DELETED',
+                        'device' => 'DELETED',
+                        'location' => 'DELETED',
+                        'status' => 'DELETED',
+                        'comments' => 'DELETED',
+                    ],
+                ],
+                'change_date' => now(),
+                'reason' => request()->input('reason') ?? 'No reason provided',
+            ]);
+        });
+
         static::updated(function (Item $item) {
             $item->historicals()->create([
                 'item_id' => $item->id,

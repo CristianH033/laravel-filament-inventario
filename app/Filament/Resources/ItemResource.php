@@ -32,21 +32,22 @@ class ItemResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('device')
-                    ->relationship(titleAttribute: 'model')
+                Forms\Components\Select::make('device_id')
+                    ->relationship('device', 'model')
                     ->native(false)
                     ->searchable()
                     ->preload()
+                    ->exists('devices', 'id')
                     ->createOptionForm([
-                        Forms\Components\Select::make('category')
-                            ->relationship(titleAttribute: 'name')
+                        Forms\Components\Select::make('category_id')
+                            ->relationship('category', 'name')
                             ->createOptionForm([
                                 Forms\Components\TextInput::make('name')
                                     ->required(),
                             ])
                             ->required(),
-                        Forms\Components\Select::make('brand')
-                            ->relationship(titleAttribute: 'name')
+                        Forms\Components\Select::make('brand_id')
+                            ->relationship('brand', 'name')
                             ->createOptionForm([
                                 Forms\Components\TextInput::make('name')
                                     ->required(),
@@ -59,8 +60,8 @@ class ItemResource extends Resource
                             ->columnSpanFull(),
                     ])
                     ->required(),
-                Forms\Components\Select::make('location')
-                    ->relationship(titleAttribute: 'name')
+                Forms\Components\Select::make('location_id')
+                    ->relationship('location', 'name')
                     ->native(false)
                     ->searchable()
                     ->preload()
@@ -71,8 +72,14 @@ class ItemResource extends Resource
                             ->columnSpanFull(),
                     ])
                     ->required(),
-                Forms\Components\Select::make('status')
-                    ->relationship(titleAttribute: 'name')
+                Forms\Components\Select::make('status_id')
+                    ->relationship('status', 'name')
+                    ->allowHtml(true)
+                    ->options(
+                        Status::all()->mapWithKeys(
+                            fn ($status) => [$status->id => static::renderBadge($status->color, $status->name)]
+                        )
+                    )
                     ->native(false)
                     ->searchable()
                     ->preload()
@@ -82,7 +89,7 @@ class ItemResource extends Resource
                         Forms\Components\Select::make('color')
                             ->options(
                                 collect(Colors::getAllKeys())->mapWithKeys(
-                                    fn ($color) => [$color => Blade::render('<x-filament::badge color="' . $color . '">' . $color . '</x-filament::badge>')]
+                                    fn ($color) => [$color => static::renderBadge($color, $color)]
                                 )
                             )
                             ->native(false)
@@ -193,6 +200,11 @@ class ItemResource extends Resource
             'view' => Pages\ViewItem::route('/{record}'),
             'edit' => Pages\EditItem::route('/{record}/edit'),
         ];
+    }
+
+    public static function renderBadge(string $color, string $text): string
+    {
+        return Blade::render('<x-filament::badge color="' . $color . '">' . $text . '</x-filament::badge>');
     }
 
     /**
