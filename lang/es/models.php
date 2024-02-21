@@ -16,8 +16,8 @@ return [
         "updated_at" => "Actualizado en",
     ],
     "items" => [
-        "_self" => "Artículo",
-        "_self_plural" => "Artículos",
+        "_self" => "Elemento",
+        "_self_plural" => "Elementos",
         "id" => "Id",
         "serial" => "Número de serie",
         "internal_serial" => "Número de serie interno",
