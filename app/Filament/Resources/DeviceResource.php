@@ -26,25 +26,31 @@ class DeviceResource extends Resource
             ->schema([
                 Forms\Components\Select::make('category_id')
                     ->relationship('category', 'name')
+                    ->label(__('models.category._self'))
                     ->exists()
                     ->createOptionForm([
                         Forms\Components\TextInput::make('name')
+                            ->label(__('models.category.name'))
                             ->required(),
                     ])
                     ->required(),
                 Forms\Components\Select::make('brand_id')
                     ->relationship('brand', 'name')
+                    ->label(__('models.brand._self'))
                     ->exists()
                     ->createOptionForm([
                         Forms\Components\TextInput::make('name')
+                            ->label(__('models.brand.name'))
                             ->required(),
                     ])
                     ->required(),
                 Forms\Components\TextInput::make('model')
+                    ->label(__('models.device.model'))
                     ->columnSpanFull()
                     ->unique(ignoreRecord: true)
                     ->required(),
                 Forms\Components\Textarea::make('description')
+                    ->label(__('models.device.description'))
                     ->columnSpanFull(),
             ]);
     }
@@ -54,19 +60,24 @@ class DeviceResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('category.name')
+                    ->label(__('models.category._self'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('brand.name')
+                    ->label(__('models.brand._self'))
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('model')
+                    ->label(__('models.device.model'))
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('models.device.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('models.device.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -116,5 +127,20 @@ class DeviceResource extends Resource
             'view' => Pages\ViewDevice::route('/{record}'),
             'edit' => Pages\EditDevice::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('models.device._self_plural');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('models.device._self');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('models.device._self_plural');
     }
 }

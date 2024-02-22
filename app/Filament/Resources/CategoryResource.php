@@ -25,8 +25,10 @@ class CategoryResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                    ->label(__('models.category.name'))
                     ->required(),
                 Forms\Components\Textarea::make('description')
+                    ->label(__('models.category.description'))
                     ->columnSpanFull(),
             ]);
     }
@@ -36,12 +38,15 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('models.category.name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('models.category.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('models.category.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -79,7 +84,7 @@ class CategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            'devices' => RelationManagers\DevicesRelationManager::class,
+            RelationManagers\DevicesRelationManager::class,
         ];
     }
 
@@ -91,5 +96,20 @@ class CategoryResource extends Resource
             'view' => Pages\ViewCategory::route('/{record}'),
             'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('models.category._self_plural');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('models.category._self');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('models.category._self_plural');
     }
 }

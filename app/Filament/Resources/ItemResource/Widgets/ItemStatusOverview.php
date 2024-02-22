@@ -5,11 +5,10 @@ namespace App\Filament\Resources\ItemResource\Widgets;
 use App\Helpers\Colors;
 use App\Models\Status;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ItemStatusOverview extends ChartWidget
 {
-    protected static ?string $heading = 'Items Overview by Status';
-
     protected function getData(): array
     {
         $statuses = Status::select('id', 'name', 'color')->withCount('items')->orderBy('id')->get();
@@ -50,5 +49,10 @@ class ItemStatusOverview extends ChartWidget
                 'duration' => 500,
             ],
         ];
+    }
+
+    public function getHeading(): string|Htmlable|null
+    {
+        return __('Items by Status');
     }
 }

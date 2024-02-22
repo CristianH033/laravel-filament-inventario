@@ -57,13 +57,13 @@ class Historical extends Model
         // @phpstan-ignore-next-line
         $changeLog = is_array($this->change_log) ? $this->change_log : [];
 
-        if (!array_key_exists('prev_state', $changeLog) || !array_key_exists('new_state', $changeLog)) {
+        if (! array_key_exists('prev_state', $changeLog) || ! array_key_exists('new_state', $changeLog)) {
             return Attribute::make(
                 get: fn () => []
             );
         }
 
-        if (!is_array($changeLog['prev_state']) || !is_array($changeLog['new_state'])) {
+        if (! is_array($changeLog['prev_state']) || ! is_array($changeLog['new_state'])) {
             return Attribute::make(
                 get: fn () => []
             );
@@ -77,6 +77,13 @@ class Historical extends Model
         foreach ($diff as $key => $value) {
             $changes[] = [
                 'field' => __($key),
+                'field_trans_key' => match ($key) {
+                    'item_id', 'serial', 'internal_serial', 'comments' => 'models.item.'.$key,
+                    'device' => 'models.device._self',
+                    'location' => 'models.location._self',
+                    'status' => 'models.status._self',
+                    default => $key
+                },
                 'prev' => $this->change_log['prev_state'][$key],
                 'new' => $value,
             ];

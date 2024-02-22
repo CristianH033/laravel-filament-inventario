@@ -33,7 +33,7 @@ class StatusResource extends Resource
                 Forms\Components\Select::make('color')
                     ->options(
                         // collect(Color::all())->keys()->mapWithKeys(fn ($color) => [$color => $color])
-                        collect(Colors::getAllKeys())->mapWithKeys(fn ($color) => [$color => Blade::render('<x-filament::badge color="' . $color . '">' . $color . '</x-filament::badge>')])
+                        collect(Colors::getAllKeys())->mapWithKeys(fn ($color) => [$color => Blade::render('<x-filament::badge color="'.$color.'">'.$color.'</x-filament::badge>')])
                     )
                     ->native(false)
                     ->allowHtml()
@@ -105,5 +105,20 @@ class StatusResource extends Resource
             'view' => Pages\ViewStatus::route('/{record}'),
             'edit' => Pages\EditStatus::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('models.status._self_plural');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('models.status._self');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('models.status._self_plural');
     }
 }

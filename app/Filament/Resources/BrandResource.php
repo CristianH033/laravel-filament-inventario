@@ -26,6 +26,7 @@ class BrandResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->unique(ignoreRecord: true)
+                    ->label(__('models.brand.name'))
                     ->required(),
             ]);
     }
@@ -35,12 +36,15 @@ class BrandResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('models.brand.name'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('models.brand.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('models.brand.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -90,5 +94,20 @@ class BrandResource extends Resource
             'view' => Pages\ViewBrand::route('/{record}'),
             'edit' => Pages\EditBrand::route('/{record}/edit'),
         ];
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('models.brand._self_plural');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('models.brand._self');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('models.brand._self_plural');
     }
 }

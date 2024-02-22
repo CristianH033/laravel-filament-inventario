@@ -13,9 +13,9 @@ class ItemStatsOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Total Items', Item::count()),
-            Stat::make('Total Locations', Location::count()),
-            Stat::make('Total Items Changes', Historical::count()),
+            Stat::make(__('Total Items'), Item::count()),
+            Stat::make(__('Total Locations'), Location::count()),
+            Stat::make(__('Total Items Changes'), Historical::count()),
         ];
     }
 }

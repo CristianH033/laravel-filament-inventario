@@ -7,11 +7,10 @@ use App\Models\Location;
 use App\Models\Status;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ItemLocationOverview extends ChartWidget
 {
-    protected static ?string $heading = 'Items by Location';
-
     protected function getData(): array
     {
 
@@ -131,5 +130,10 @@ class ItemLocationOverview extends ChartWidget
     public function getColumnSpan(): int|string|array
     {
         return 1;
+    }
+
+    public function getHeading(): string|Htmlable|null
+    {
+        return __('Items by Location');
     }
 }

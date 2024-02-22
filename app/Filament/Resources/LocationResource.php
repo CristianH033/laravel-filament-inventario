@@ -93,4 +93,19 @@ class LocationResource extends Resource
             'edit' => Pages\EditLocation::route('/{record}/edit'),
         ];
     }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('models.location._self_plural');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('models.location._self');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('models.location._self_plural');
+    }
 }

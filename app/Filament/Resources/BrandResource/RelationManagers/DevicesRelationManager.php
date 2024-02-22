@@ -16,7 +16,18 @@ class DevicesRelationManager extends RelationManager
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('category_id')
+                    ->relationship('category', 'name')
+                    ->label(__('models.category._self'))
+                    ->exists()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->label(__('models.category.name'))
+                            ->required(),
+                    ])
+                    ->required(),
                 Forms\Components\TextInput::make('model')
+                    ->label(__('models.device.model'))
                     ->required()
                     ->maxLength(255),
             ]);
@@ -26,8 +37,12 @@ class DevicesRelationManager extends RelationManager
     {
         return $table
             ->recordTitleAttribute('model')
+            ->heading(__('models.device._self_plural'))
+            ->modelLabel(__('models.device._self'))
+            ->pluralModelLabel(__('models.device._self_plural'))
             ->columns([
-                Tables\Columns\TextColumn::make('model'),
+                Tables\Columns\TextColumn::make('model')
+                    ->label(__('models.device.model')),
             ])
             ->filters([
                 //

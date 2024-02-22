@@ -26,11 +26,18 @@ class HistoricalsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('Change log')
+            ->recordTitleAttribute('change_log')
+            ->heading(__('models.historical._self_plural'))
+            ->modelLabel(__('models.historical._self'))
+            ->pluralModelLabel(__('models.historical._self_plural'))
             ->defaultSort('change_date', 'desc')
             ->columns([
-                \App\Tables\Columns\ChangeLog::make('display_changes'),
-                Tables\Columns\TextColumn::make('change_date'),
+                \App\Tables\Columns\ChangeLog::make('display_changes')
+                    ->label(__('models.historical.display_changes')),
+                Tables\Columns\TextColumn::make('reason')
+                    ->label(__('models.historical.reason')),
+                Tables\Columns\TextColumn::make('change_date')
+                    ->label(__('models.historical.change_date')),
             ])
             ->filters([
                 //

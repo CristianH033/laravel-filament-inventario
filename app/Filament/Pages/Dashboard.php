@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Filament\Pages;
+
+use Filament\Pages\Dashboard as BasePage;
+
+class Dashboard extends BasePage
+{
+    protected static ?string $navigationLabel = 'Dashboard';
+
+    protected static ?string $title = 'Dashboard';
+
+    public static function getNavigationLabel(): string
+    {
+        return static::$navigationLabel ??
+            static::$title ??
+            __('filament-panels::pages/dashboard.title');
+    }
+}

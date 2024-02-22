@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ItemResource\Pages;
 use App\Filament\Resources\ItemResource\RelationManagers;
 use App\Helpers\Colors;
+use App\Helpers\RenderBlade;
 use App\Models\Device;
 use App\Models\Item;
 use App\Models\Location;
@@ -18,7 +19,6 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Blade;
 
 class ItemResource extends Resource
 {
@@ -34,6 +34,7 @@ class ItemResource extends Resource
             ->schema([
                 Forms\Components\Select::make('device_id')
                     ->relationship('device', 'model')
+                    ->label(__('models.device._self'))
                     ->native(false)
                     ->searchable()
                     ->preload()
@@ -41,43 +42,53 @@ class ItemResource extends Resource
                     ->createOptionForm([
                         Forms\Components\Select::make('category_id')
                             ->relationship('category', 'name')
+                            ->label(__('models.category._self'))
                             ->createOptionForm([
                                 Forms\Components\TextInput::make('name')
+                                    ->label(__('models.category.name'))
                                     ->required(),
                             ])
                             ->required(),
                         Forms\Components\Select::make('brand_id')
                             ->relationship('brand', 'name')
+                            ->label(__('models.brand._self'))
                             ->createOptionForm([
                                 Forms\Components\TextInput::make('name')
+                                    ->label(__('models.brand.name'))
                                     ->required(),
                             ])
                             ->required(),
                         Forms\Components\TextInput::make('model')
+                            ->label(__('models.device.model'))
                             ->columnSpanFull()
                             ->required(),
                         Forms\Components\Textarea::make('description')
+                            ->label(__('models.device.description'))
                             ->columnSpanFull(),
                     ])
                     ->required(),
                 Forms\Components\Select::make('location_id')
                     ->relationship('location', 'name')
+                    ->label(__('models.location._self'))
                     ->native(false)
                     ->searchable()
                     ->preload()
                     ->createOptionForm([
                         Forms\Components\TextInput::make('name')
+                            ->label(__('models.location.name'))
                             ->required(),
                         Forms\Components\Textarea::make('description')
+                            ->label(__('models.location.description'))
                             ->columnSpanFull(),
                     ])
                     ->required(),
                 Forms\Components\Select::make('status_id')
                     ->relationship('status', 'name')
+                    ->label(__('models.status._self'))
                     ->allowHtml(true)
                     ->options(
                         Status::all()->mapWithKeys(
-                            fn ($status) => [$status->id => static::renderBadge($status->color, $status->name)]
+                            fn ($status) => [$status->id => RenderBlade::badge($status->color, $status->name)]
                         )
                     )
                     ->native(false)
@@ -85,11 +96,13 @@ class ItemResource extends Resource
                     ->preload()
                     ->createOptionForm([
                         Forms\Components\TextInput::make('name')
+                            ->label(__('models.status.name'))
                             ->required(),
                         Forms\Components\Select::make('color')
+                            ->label(__('models.status.color'))
                             ->options(
                                 collect(Colors::getAllKeys())->mapWithKeys(
-                                    fn ($color) => [$color => static::renderBadge($color, $color)]
+                                    fn ($color) => [$color => RenderBlade::badge($color, $color)]
                                 )
                             )
                             ->native(false)
@@ -98,12 +111,15 @@ class ItemResource extends Resource
                     ])
                     ->required(),
                 Forms\Components\TextInput::make('serial')
+                    ->label(__('models.item.serial'))
                     ->unique(ignoreRecord: true)
                     ->required(),
                 Forms\Components\TextInput::make('internal_serial')
+                    ->label(__('models.item.internal_serial'))
                     ->unique(ignoreRecord: true)
                     ->required(),
                 Forms\Components\Textarea::make('comments')
+                    ->label(__('models.item.comments'))
                     ->columnSpanFull(),
             ]);
     }
@@ -113,12 +129,15 @@ class ItemResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('serial')
+                    ->label(__('models.item.serial'))
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('internal_serial')
+                    ->label(__('models.item.internal_serial'))
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('device.display_name')
+                    ->label(__('models.device.display_name'))
                     ->numeric()
                     ->sortable(query: function (Builder $query, string $direction, $column): Builder {
                         // [$table, $field] = explode('.', $column->getName());
@@ -128,6 +147,7 @@ class ItemResource extends Resource
                             ->orderBy(implode('_', [$table, $field]), $direction);
                     }),
                 Tables\Columns\TextColumn::make('location.name')
+                    ->label(__('models.location._self'))
                     ->numeric()
                     ->sortable(),
                 // Tables\Columns\SelectColumn::make('location_id')
@@ -135,37 +155,45 @@ class ItemResource extends Resource
                 //     ->options(Location::pluck('name', 'id')->toArray())
                 //     ->rules(['required', 'exists:locations,id']),
                 Tables\Columns\TextColumn::make('status.name')
+                    ->label(__('models.status._self'))
                     ->numeric()
                     ->badge()
                     ->color(fn (Item $item) => $item->status?->color)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('models.item.created_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('models.item.updated_at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('location')
+                    ->label(__('models.location._self'))
                     ->multiple()
                     ->options(Location::pluck('name', 'id'))
                     ->attribute('location_id'),
                 SelectFilter::make('status')
+                    ->label(__('models.status._self'))
                     ->multiple()
                     ->options(Status::pluck('name', 'id'))
                     ->attribute('status_id'),
                 SelectFilter::make('device')
+                    ->label(__('models.device._self'))
                     ->multiple()
                     ->options(Device::with('brand')->get()->collect()->pluck('display_name', 'id'))
                     ->attribute('device_id'),
                 SelectFilter::make('brand')
+                    ->label(__('models.brand._self'))
                     ->multiple()
                     ->preload()
                     ->relationship('device.brand', 'name'),
                 SelectFilter::make('category')
+                    ->label(__('models.category._self'))
                     ->multiple()
                     ->preload()
                     ->relationship('device.category', 'name'),
@@ -202,11 +230,6 @@ class ItemResource extends Resource
         ];
     }
 
-    public static function renderBadge(string $color, string $text): string
-    {
-        return Blade::render('<x-filament::badge color="' . $color . '">' . $text . '</x-filament::badge>');
-    }
-
     /**
      * Get the Eloquent query builder for the resource's corresponding model.
      *
@@ -229,5 +252,20 @@ class ItemResource extends Resource
         }
 
         return $query;
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('models.item._self_plural');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('models.item._self');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('models.item._self_plural');
     }
 }
