@@ -112,4 +112,9 @@ class CategoryResource extends Resource
     {
         return __('models.category._self_plural');
     }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Parameters');
+    }
 }

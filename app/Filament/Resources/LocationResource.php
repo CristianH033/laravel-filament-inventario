@@ -108,4 +108,9 @@ class LocationResource extends Resource
     {
         return __('models.location._self_plural');
     }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Parameters');
+    }
 }

@@ -143,4 +143,9 @@ class DeviceResource extends Resource
     {
         return __('models.device._self_plural');
     }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Parameters');
+    }
 }

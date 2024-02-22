@@ -110,4 +110,9 @@ class BrandResource extends Resource
     {
         return __('models.brand._self_plural');
     }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Parameters');
+    }
 }

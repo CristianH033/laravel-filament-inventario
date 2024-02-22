@@ -121,4 +121,9 @@ class StatusResource extends Resource
     {
         return __('models.status._self_plural');
     }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Parameters');
+    }
 }

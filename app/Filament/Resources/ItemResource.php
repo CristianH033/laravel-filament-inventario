@@ -19,6 +19,7 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ItemResource extends Resource
 {
@@ -209,6 +210,7 @@ class ItemResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make(),
                 ]),
             ]);
     }
@@ -267,5 +269,15 @@ class ItemResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('models.item._self_plural');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('Inventory');
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }
