@@ -13,9 +13,12 @@ class ItemStatsOverview extends BaseWidget
     protected function getStats(): array
     {
         return [
-            Stat::make(__('Total Items'), Item::count()),
-            Stat::make(__('Total Locations'), Location::count()),
-            Stat::make(__('Total Items Changes'), Historical::count()),
+            Stat::make(__('Total Items'), Item::count())
+                ->icon('tabler-device-heart-monitor'),
+            Stat::make(__('Total Locations'), Location::count())
+                ->icon('uiw-map'),
+            Stat::make(__('Total Items Changes'), Historical::count())
+                ->icon('fluentui-history-20'),
         ];
     }
 }
