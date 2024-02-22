@@ -85,4 +85,9 @@ return [
 
     'livewire_loading_delay' => 'default',
 
+    'authorized_users' => array_map(
+        fn ($email) => str($email)->trim()->lower()->value(),
+        explode(',', env('AUTHORIZED_USERS', ''))
+    ),
+
 ];
