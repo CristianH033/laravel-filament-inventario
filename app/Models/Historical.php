@@ -48,6 +48,98 @@ class Historical extends Model
     }
 
     /**
+     * Get the prev state attribute
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute<array<string, string>, never>
+     */
+    protected function prevState(): Attribute
+    {
+        // @phpstan-ignore-next-line
+        $changeLog = is_array($this->change_log) ? $this->change_log : [];
+
+        if (! array_key_exists('prev_state', $changeLog)) {
+            return Attribute::make(
+                get: fn () => []
+            );
+        }
+
+        return Attribute::make(
+            get: fn () => $changeLog['prev_state']
+        );
+    }
+
+    /**
+     * Get the changes attribute
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute<string, never>
+     */
+    protected function prevStateText(): Attribute
+    {
+        $prevState = $this->prevState;
+
+        $strings = [];
+
+        foreach ($prevState as $key => $state) {
+            $strings[] = $key.': '.$state;
+        }
+
+        $text = implode(';', $strings);
+
+        return Attribute::make(
+            get: fn () => $text
+        );
+    }
+
+    /**
+     * Get the changes attribute
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute<array<string, string>, never>
+     */
+    protected function newState(): Attribute
+    {
+        // @phpstan-ignore-next-line
+        $changeLog = is_array($this->change_log) ? $this->change_log : [];
+
+        if (! array_key_exists('new_state', $changeLog)) {
+            return Attribute::make(
+                get: fn () => []
+            );
+        }
+
+        return Attribute::make(
+            get: fn () => $changeLog['new_state']
+        );
+    }
+
+    /**
+     * Get the changes attribute
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute<string, never>
+     */
+    protected function newStateText(): Attribute
+    {
+        $prevState = $this->new_state;
+
+        if (empty($prevState)) {
+            return Attribute::make(
+                get: fn () => ''
+            );
+        }
+
+        $strings = [];
+
+        foreach ($prevState as $key => $state) {
+            $strings[] = $key.': '.$state;
+        }
+
+        $text = implode(';', $strings);
+
+        return Attribute::make(
+            get: fn () => $text
+        );
+    }
+
+    /**
      * Get the changes attribute
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute<array<array<string, string>>, never>
