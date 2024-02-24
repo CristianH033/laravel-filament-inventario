@@ -24,6 +24,7 @@ return [
         'serial' => 'Serial',
         'internal_serial' => 'Internal serial',
         'device_id' => 'Device id',
+        'owned_by' => 'Owned by',
         'location_id' => 'Location id',
         'status_id' => 'Status id',
         'comments' => 'Comments',
