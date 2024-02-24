@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -18,7 +19,8 @@ return new class extends Migration
             $table->string('serial')->unique();
             $table->string('internal_serial')->unique();
             $table->foreignId('device_id')->constrained();
-            $table->foreignId('location_id')->constrained();
+            $table->foreignId('owner_id')->constrained('locations');
+            $table->foreignId('location_id')->constrained('locations');
             $table->foreignId('status_id')->constrained();
             $table->text('comments')->nullable();
             $table->timestamps();

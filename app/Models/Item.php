@@ -20,6 +20,7 @@ class Item extends Model
         'serial',
         'internal_serial',
         'device_id',
+        'owner_id',
         'location_id',
         'status_id',
         'comments',
@@ -33,6 +34,7 @@ class Item extends Model
     protected $casts = [
         'id' => 'integer',
         'device_id' => 'integer',
+        'owner_id' => 'integer',
         'location_id' => 'integer',
         'status_id' => 'integer',
     ];
@@ -51,6 +53,7 @@ class Item extends Model
                         'serial' => $item->serial,
                         'internal_serial' => $item->internal_serial,
                         'device' => $item->device?->display_name,
+                        'owner' => $item->owner?->name,
                         'location' => $item->location?->name,
                         'status' => $item->status?->name,
                         'comments' => $item->comments,
@@ -60,6 +63,7 @@ class Item extends Model
                         'serial' => 'DELETED',
                         'internal_serial' => 'DELETED',
                         'device' => 'DELETED',
+                        'owner' => 'DELETED',
                         'location' => 'DELETED',
                         'status' => 'DELETED',
                         'comments' => 'DELETED',
@@ -78,6 +82,7 @@ class Item extends Model
                         'serial' => $item->getOriginal('serial'),
                         'internal_serial' => $item->getOriginal('internal_serial'),
                         'device' => Device::find($item->getOriginal('device_id'))->display_name ?? 'No device',
+                        'owner' => Location::find($item->getOriginal('owner_id'))->name ?? 'No Owner',
                         'location' => Location::find($item->getOriginal('location_id'))->name ?? 'No location',
                         'status' => Status::find($item->getOriginal('status_id'))->name ?? 'No status',
                         'comments' => $item->getOriginal('comments'),
@@ -86,6 +91,7 @@ class Item extends Model
                         'serial' => $item->serial,
                         'internal_serial' => $item->internal_serial,
                         'device' => $item->device?->display_name,
+                        'owner' => $item->owner?->name,
                         'location' => $item->location?->name,
                         'status' => $item->status?->name,
                         'comments' => $item->comments,
@@ -105,6 +111,16 @@ class Item extends Model
     public function device(): BelongsTo
     {
         return $this->belongsTo(Device::class);
+    }
+
+    /**
+     * Get the location that owns the Item
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Location, Item>
+     */
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(Location::class, 'owner_id', 'id');
     }
 
     /**

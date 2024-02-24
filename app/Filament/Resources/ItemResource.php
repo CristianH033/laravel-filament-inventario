@@ -19,7 +19,9 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Maatwebsite\Excel\Excel;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class ItemResource extends Resource
 {
@@ -65,6 +67,21 @@ class ItemResource extends Resource
                             ->required(),
                         Forms\Components\Textarea::make('description')
                             ->label(__('models.device.description'))
+                            ->columnSpanFull(),
+                    ])
+                    ->required(),
+                Forms\Components\Select::make('owner_id')
+                    ->relationship('owner', 'name')
+                    ->label(__('models.item.owned_by'))
+                    ->native(false)
+                    ->searchable()
+                    ->preload()
+                    ->createOptionForm([
+                        Forms\Components\TextInput::make('name')
+                            ->label(__('models.location.name'))
+                            ->required(),
+                        Forms\Components\Textarea::make('description')
+                            ->label(__('models.location.description'))
                             ->columnSpanFull(),
                     ])
                     ->required(),
@@ -129,6 +146,10 @@ class ItemResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                    ->label(__('models.item.id'))
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('serial')
                     ->label(__('models.item.serial'))
                     ->sortable()
@@ -147,10 +168,16 @@ class ItemResource extends Resource
                         return $query->withAggregate($table, $field)
                             ->orderBy(implode('_', [$table, $field]), $direction);
                     }),
+                Tables\Columns\TextColumn::make('owner.name')
+                    ->label(__('models.item.owned_by'))
+                    ->numeric()
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('location.name')
                     ->label(__('models.location._self'))
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 // Tables\Columns\SelectColumn::make('location_id')
                 //     ->label('Location')
                 //     ->options(Location::pluck('name', 'id')->toArray())
@@ -161,6 +188,9 @@ class ItemResource extends Resource
                     ->badge()
                     ->color(fn (Item $item) => $item->status?->color)
                     ->sortable(),
+                Tables\Columns\TextColumn::make('comments')
+                    ->label(__('models.item.comments'))
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('models.item.created_at'))
                     ->dateTime()
@@ -173,6 +203,11 @@ class ItemResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('owner')
+                    ->label(__('models.item.owned_by'))
+                    ->multiple()
+                    ->options(Location::pluck('name', 'id'))
+                    ->attribute('owner_id'),
                 SelectFilter::make('location')
                     ->label(__('models.location._self'))
                     ->multiple()
@@ -209,8 +244,13 @@ class ItemResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    ExportBulkAction::make(),
+                    // Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make()->exports([
+                        ExcelExport::make('export')
+                            ->fromTable()
+                            ->askForFilename(default: 'Inventario_'.date('Y_m_d'), label: __('File name'))
+                            ->askForWriterType(default: Excel::XLSX, label: __('File type')),
+                    ]),
                 ]),
             ]);
     }

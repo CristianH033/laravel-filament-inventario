@@ -26,6 +26,7 @@ class ItemFactory extends Factory
             'serial' => $this->faker->unique()->bothify('??-####?'),
             'internal_serial' => $this->faker->unique()->bothify('??-####?'),
             'device_id' => Device::factory(),
+            'owner_id' => Location::factory(),
             'location_id' => Location::factory(),
             'status_id' => Status::factory(),
             'comments' => $this->faker->text(),

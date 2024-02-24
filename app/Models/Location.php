@@ -34,6 +34,16 @@ class Location extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany<Item>
      */
+    public function ownedItems(): HasMany
+    {
+        return $this->hasMany(Item::class, 'owner_id', 'id');
+    }
+
+    /**
+     * Get all of the items for the Location
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Item>
+     */
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);
