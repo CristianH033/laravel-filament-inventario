@@ -152,4 +152,20 @@ class Item extends Model
     {
         return $this->hasMany(Historical::class);
     }
+
+    public static function generateUniqueSerial(): string
+    {
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        do {
+            $randomString = 'TEMP-';
+
+            for ($i = 0; $i < 10; $i++) {
+                $index = rand(0, strlen($characters) - 1);
+                $randomString .= $characters[$index];
+            }
+        } while (self::where('SERIAL', $randomString)->exists());
+
+        return $randomString;
+    }
 }

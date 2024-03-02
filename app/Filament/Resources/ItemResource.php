@@ -133,9 +133,7 @@ class ItemResource extends Resource
                     ->unique(ignoreRecord: true)
                     ->required(),
                 Forms\Components\TextInput::make('internal_serial')
-                    ->label(__('models.item.internal_serial'))
-                    ->unique(ignoreRecord: true)
-                    ->required(),
+                    ->label(__('models.item.internal_serial')),
                 Forms\Components\Textarea::make('comments')
                     ->label(__('models.item.comments'))
                     ->columnSpanFull(),
@@ -162,11 +160,13 @@ class ItemResource extends Resource
                     ->label(__('models.device.display_name'))
                     ->numeric()
                     ->sortable(query: function (Builder $query, string $direction, $column): Builder {
-                        // [$table, $field] = explode('.', $column->getName());
                         [$table, $field] = ['device', 'model'];
 
                         return $query->withAggregate($table, $field)
                             ->orderBy(implode('_', [$table, $field]), $direction);
+                    })
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->whereHas('device', fn ($query) => $query->where('model', 'LIKE', "%{$search}%"));
                     }),
                 Tables\Columns\TextColumn::make('owner.name')
                     ->label(__('models.item.owned_by'))

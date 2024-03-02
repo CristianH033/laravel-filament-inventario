@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->string('serial')->unique();
-            $table->string('internal_serial')->unique();
+            $table->string('internal_serial')->nullable();
             $table->foreignId('device_id')->constrained();
             $table->foreignId('owner_id')->constrained('locations');
             $table->foreignId('location_id')->constrained('locations');

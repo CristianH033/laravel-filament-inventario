@@ -2,6 +2,7 @@
 
 namespace App\Tasks;
 
+use App\Helpers\Colors;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Device;
@@ -38,12 +39,12 @@ class ImportExcelData
                 Validation::VALIDATE_DUPLICATE => ['BRAND', 'CATEGORY'],
             ],
             'SERIAL' => [
-                Validation::VALIDATE_EMPTY => [],
-                Validation::VALIDATE_DUPLICATE => [],
+                // Validation::VALIDATE_EMPTY => [],
+                Validation::VALIDATE_DUPLICATE_WITH_NULLS => [],
             ],
             'INTERNAL_SERIAL' => [
-                Validation::VALIDATE_EMPTY => [],
-                Validation::VALIDATE_DUPLICATE => [],
+                // Validation::VALIDATE_EMPTY => [],
+                // Validation::VALIDATE_DUPLICATE => [],
             ],
             'STATUS' => [
                 Validation::VALIDATE_EMPTY => [],
@@ -90,7 +91,7 @@ class ImportExcelData
         foreach ($statuses as $status) {
             Status::firstOrCreate([
                 'name' => $status,
-                'color' => 'success',
+                'color' => collect(Colors::getAllKeys())->random(),
             ]);
         }
     }
@@ -155,7 +156,7 @@ class ImportExcelData
             $device = Device::firstOrCreate(['model' => $record->get('MODEL')]);
 
             Item::firstOrCreate([
-                'serial' => $record->get('SERIAL'),
+                'serial' => $record->get('SERIAL') ?? Item::generateUniqueSerial(),
                 'internal_serial' => $record->get('INTERNAL_SERIAL'),
                 'device_id' => $device->id,
                 'owner_id' => $owner->id,

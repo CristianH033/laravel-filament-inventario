@@ -16,6 +16,8 @@ class Validation
 
     const VALIDATE_DUPLICATE = 'VALIDATE_DUPLICATE';
 
+    const VALIDATE_DUPLICATE_WITH_NULLS = 'VALIDATE_DUPLICATE_WITH_NULLS';
+
     const PARAM_GROUP = 'PARAM_GROUP';
 
     /**
@@ -60,7 +62,8 @@ class Validation
                             return [
                                 $column => match ($validation) {
                                     self::VALIDATE_EMPTY => $this->validateEmpty($data, $column),
-                                    self::VALIDATE_DUPLICATE => $this->validateDuplicate($data, $column, $params),
+                                    self::VALIDATE_DUPLICATE => $this->validateDuplicate($data, $column, $params, false),
+                                    self::VALIDATE_DUPLICATE_WITH_NULLS => $this->validateDuplicate($data, $column, $params, true),
                                     default => collect()
                                 },
                             ];
@@ -100,11 +103,12 @@ class Validation
     /**
      * @param  Collection<int, Collection<int|string, int|string|null|bool>>  $data
      * @param  array<string>  $group
+     * @param  bool  $allowNulls
      * @return Collection<string, mixed> $data
      *
      * @throws InvalidArgumentException
      */
-    private function validateDuplicate(Collection $data, string $column, $group = []): Collection
+    private function validateDuplicate(Collection $data, string $column, $group = [], $allowNulls = false): Collection
     {
         $columns = collect($group)->merge([$column])->unique();
 
@@ -120,7 +124,13 @@ class Validation
             $items = $data;
         }
 
-        $results = $items->duplicates($column);
+        // dd($items);
+
+        $results = $allowNulls ?
+            $items->filter(
+                fn ($item) => ! is_null($item->get($column))
+            )->duplicates($column, true) :
+            $items->duplicates($column, true);
 
         return $results->flatMap(function ($value, $key) {
             // return "Duplicate value in row: " . ($key + 2) . ", value: " . $value;

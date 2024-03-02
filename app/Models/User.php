@@ -53,6 +53,6 @@ class User extends Authenticatable implements FilamentUser
 
         $authorizedusers = collect($emailsArray);
 
-        return $authorizedusers->contains(str($this->email)->trim()->lower()->value()) && $this->hasVerifiedEmail();
+        return $authorizedusers->contains(str($this->email)->trim()->lower()->value());
     }
 }
