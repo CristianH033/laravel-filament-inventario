@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Category extends Model
 {
@@ -37,5 +38,15 @@ class Category extends Model
     public function devices(): HasMany
     {
         return $this->hasMany(Device::class);
+    }
+
+    /**
+     * Get all the items for the Category
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough<Item, Device>
+     */
+    public function items(): HasManyThrough
+    {
+        return $this->hasManyThrough(Item::class, Device::class);
     }
 }

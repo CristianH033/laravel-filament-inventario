@@ -68,8 +68,8 @@ class ItemLocationOverview extends ChartWidget
         $dataSets[] = [
             'label' => 'Total',
             'data' => $dataSetTotal,
-            'backgroundColor' => 'rgba('.Color::Amber[900].', 0.6)',
-            'borderColor' => 'rgb('.Color::Amber[500].')',
+            'backgroundColor' => 'rgba(' . Color::Amber[900] . ', 0.6)',
+            'borderColor' => 'rgb(' . Color::Amber[500] . ')',
             'fill' => false,
             'pointHoverRadius' => 20,
             'pointHoverBorderWidth' => 5,

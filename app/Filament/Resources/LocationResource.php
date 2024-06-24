@@ -94,6 +94,13 @@ class LocationResource extends Resource
         ];
     }
 
+    public static function getWidgets(): array
+    {
+        return [
+            LocationResource\Widgets\LocationOverview::class
+        ];
+    }
+
     public static function getNavigationLabel(): string
     {
         return __('models.location._self_plural');

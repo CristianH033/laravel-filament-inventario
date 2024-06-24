@@ -16,4 +16,11 @@ class ViewLocation extends ViewRecord
             Actions\EditAction::make(),
         ];
     }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            LocationResource\Widgets\LocationOverview::class,
+        ];
+    }
 }

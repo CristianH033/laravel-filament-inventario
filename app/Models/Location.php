@@ -48,4 +48,32 @@ class Location extends Model
     {
         return $this->hasMany(Item::class);
     }
+
+    /**
+     * Get all items for the Location and grouped by device category
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<Item>
+     */
+    public function itemsByDeviceCategory()
+    {
+        $categories = Category::whereHas('devices', function ($query) {
+            $query->whereHas('items', function ($query) {
+                $query->where('location_id', $this->id);
+            });
+        })->select('id', 'name')->get();
+
+        $categories->map(function ($category) {
+            $category->statuses = Status::select('id', 'name', 'color')->get()->map(function ($status) use ($category) {
+                $status->items_count = Item::whereHas('device', function ($query) use ($category) {
+                    $query->where('category_id', $category->id);
+                })->where('location_id', $this->id)
+                    ->where('status_id', $status->id)
+                    ->count();
+
+                return $status;
+            });
+        });
+
+        return $categories;
+    }
 }
